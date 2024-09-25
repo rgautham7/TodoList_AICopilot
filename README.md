@@ -1,82 +1,93 @@
 # AI-Enabled To-Do List Application
 
-A smart task management system designed to help you categorize tasks dynamically based on deadlines, featuring an AI-enabled interface with smooth animations and a floating calendar popup for easy date assignment.
+An AI-powered, dynamic to-do list application that helps users manage and categorize tasks seamlessly. The application comes with a modern interface, featuring task sections like "Today," "Tomorrow," "This Week," and "Later," and integrates CopilotKit AI to assist users in breaking down their high-level goals into manageable tasks.
 
 ## Application Overview
 
-The **AI-Enabled To-Do List** is a modern task management app built using React, TypeScript, and Node.js. This application allows users to seamlessly categorize their tasks into sections such as **Today**, **Tomorrow**, **This Week**, and **Later**. It includes a floating calendar popup for assigning task dates, and tasks are automatically moved between categories based on the chosen date.
+This AI-Enabled To-Do List application is designed to provide an intuitive task management experience. It is enhanced with CopilotKit AI, allowing users to get personalized assistance in managing their to-do items. The AI suggests task breakdowns, organizes tasks, and ensures that they are categorized appropriately based on the selected due date.
 
 ### Key Features
 
-- **Dynamic Task Assignment:** Tasks are automatically moved to the appropriate section (Today, Tomorrow, This Week, or Later) based on the selected date.
-- **Floating Calendar Popup:** A responsive and non-intrusive calendar allows for seamless task scheduling without disrupting the website layout.
-- **Category View:** View tasks assigned to the current day, the next day, the current week, or any future date beyond the current week.
-- **Date Validation:** Prevents the assignment of past dates, ensuring tasks are always scheduled for valid, future dates.
-- **Interactive Interface:** Clean, user-friendly design with animations for smooth task handling and calendar interactions.
+- **Dynamic Date-Based Task Sorting:** Tasks are automatically sorted into "Today," "Tomorrow," "This Week," and "Later" based on the selected due date.
+- **Popup Calendar for Date Assignment:** A smooth and floating calendar popup for selecting dates without affecting the layout.
+- **AI-Powered Task Management:** Integrated CopilotKit AI provides intelligent assistance in creating and organizing tasks.
+- **Task Re-categorization:** Automatically reassign tasks to the appropriate column when the due date is updated.
+- **Invalid Date Handling:** Ensures that past dates cannot be selected and prompts an error if attempted.
+- **Clean and Modern UI:** Visually appealing and user-friendly interface with animated effects and responsive design.
 
 ### Prerequisites
 
-Ensure the following tools are installed on your local machine:
+Ensure you have the following installed on your local development machine:
 
-- **Node.js**: For running the backend server.
-- **npm or yarn**: For managing project dependencies.
-- **React**: Used for the frontend UI.
-- **TypeScript**: Type safety and advanced functionality for the project.
+- Node.js
+- npm or yarn
+- CopilotKit (for AI functionality)
 
-### Clone the Repository
+### Setup Instructions
 
-To get started, clone the repository to your local machine:
+To get started with the AI-Enabled To-Do List Application, follow these steps:
+
+#### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/ai-enabled-todo-app
+git clone https://github.com/your-username/AI-Enabled-TodoList.git
 ```
 
-### Install Dependencies
+#### 2. Install Dependencies
 
-Once you've cloned the repository, navigate into the project directory and install the necessary dependencies:
+Navigate into the project directory and install the necessary dependencies:
 
 ```bash
+cd AI-Enabled-TodoList
 npm install
 ```
 
-or, if you're using yarn:
+#### 3. Set Up CopilotKit AI
+
+You will need to configure the CopilotKit runtime in the `CopilotKit` component. Ensure that you have set the `runtimeUrl` properly:
 
 ```bash
-yarn install
+<CopilotKit runtimeUrl="/api/copilotkit">
 ```
 
-### Running the Application
+#### 4. Run the Application
 
-To start the development server:
+To start the application, use the following command:
 
 ```bash
-npm start
+npm run dev
 ```
 
-Open the app in your browser at `http://localhost:3000` to view the interface.
+Once the development server is running, open your browser and navigate to:
 
-### Calendar Pop-up and Task Reassignment Logic
+```
+http://localhost:3000
+```
 
-- The calendar popup dynamically floats over the interface without affecting the layout.
-- Tasks are categorized as follows:
-  - **Today**: Tasks assigned to the current day.
-  - **Tomorrow**: Tasks assigned to the next day.
-  - **This Week**: Tasks assigned within the current week (Monday to Saturday).
-  - **Later**: Tasks assigned beyond the current week.
-- **Date Validation**: The system will not allow tasks to be assigned to past dates, and an error message will be displayed for invalid date selections.
+### How to Use
 
-### Folder Structure
+1. **Creating Tasks:** Navigate to the "Create a to-do list" section and start adding tasks.
+2. **Assign Dates:** Click the calendar icon next to a task to assign a due date. The date picker will pop up smoothly without disrupting the layout.
+3. **AI Assistance:** The AI-powered copilot will assist in managing the tasks. Simply input high-level goals, and the AI will break them down into smaller tasks.
+4. **Task Categorization:** Based on the due date selected, the task will automatically move to the appropriate section: "Today," "Tomorrow," "This Week," or "Later."
+5. **Invalid Date Selection:** The app will prevent you from selecting past dates and will alert you if an invalid date is chosen.
 
-- **/src**
-  - **components**: Contains all the React components such as Task, Calendar, and TaskCategory.
-  - **helpers**: Utility functions, including date validation and task reassignment logic.
-  - **App.tsx**: Main component housing the entire to-do list.
-  - **index.tsx**: Entry point for the React application.
+### Technologies Used
 
-### Contributions
+- **Frontend:** React, TypeScript, Tailwind CSS for styling, and CopilotKit for AI functionality.
+- **Backend (if any):** Express.js (if needed to support the CopilotKit runtime or other server-side functionalities).
+- **AI Integration:** CopilotKit AI, providing intelligent task management assistance.
 
-Feel free to submit issues or pull requests on GitHub to help improve the application.
+### CopilotKit AI Functionality
 
-### License
+The CopilotKit AI embedded in this application acts as a co-pilot for managing your tasks. It helps:
 
-This project is open-source and available under the [MIT License](LICENSE).
+- Break down tasks based on your high-level goals.
+- Provide suggestions for better task organization.
+- Assist in automating task categorization and planning.
+
+### Future Enhancements
+
+- **Task Notifications:** Receive reminders for tasks due today or tomorrow.
+- **Enhanced AI:** Further improve AI suggestions to handle more complex task dependencies.
+- **Mobile Responsiveness:** Enhance mobile UI for better task management on small screens.
