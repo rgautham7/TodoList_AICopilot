@@ -14,9 +14,11 @@
     "@copilotkit/react-textarea": "^1.2.1",
     "@copilotkit/react-ui": "^1.2.1",
     "@copilotkit/shared": "^1.1.2",
+    "@heroicons/react": "^2.1.5",
+    "nanoid": "^5.0.8",
     "next": "14.2.6",
     "react": "^18",
-    "react-datepicker": "^7.3.0",
+    "react-datepicker": "^7.5.0",
     "react-dom": "^18"
   },
   "devDependencies": {

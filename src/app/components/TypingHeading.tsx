@@ -32,7 +32,7 @@ const TypingHeading = () => {
     }, typingSpeed);
 
     return () => clearTimeout(handleTyping);
-  }, [text, isDeleting, index, speed, delay]);
+  }, [text, isDeleting, index, speed, delay, texts]);
 
   return (
     <div className="typing-container">

@@ -3,7 +3,7 @@
 import { TodoItem } from "./TodoItem";
 import { nanoid } from "nanoid";
 import { useState } from "react";
-import { Todo } from "../types/todo";
+import { Priority, Todo } from "../types/todo";
 import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
 
 export const TodoList: React.FC = () => {
@@ -18,26 +18,11 @@ export const TodoList: React.FC = () => {
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
-
   const weekEnd = new Date(today);
   weekEnd.setDate(today.getDate() + 7);
 
-  // Filter tasks based on the date
-  const todayTasks = todos.filter(
-    (todo) => todo.assignedDate?.toDateString() === today.toDateString()
-  );
-  const tomorrowTasks = todos.filter(
-    (todo) => todo.assignedDate?.toDateString() === tomorrow.toDateString()
-  );
-  const thisWeekTasks = todos.filter(
-    (todo) =>
-      todo.assignedDate && todo.assignedDate > tomorrow && todo.assignedDate <= weekEnd
-  );
-  const laterTasks = todos.filter(
-    (todo) => todo.assignedDate && todo.assignedDate > weekEnd
-  );
 
-  // Copilot Actions: Update Todo List
+  // Copilot Actions
   useCopilotAction({
     name: "updateTodoList",
     description: "Update the user's todo list.",
@@ -56,31 +41,65 @@ export const TodoList: React.FC = () => {
     ],
     handler: ({ items }) => {
       const newTodos = [...todos];
-      for (const item of items) {
-        const index = newTodos.findIndex((todo) => todo.id === item.id);
-        index !== -1 ? (newTodos[index] = item) : newTodos.push(item);
-      }
+      newTodos.forEach((todo, index) => {
+        const foundItem = items.find(item => item.id === todo.id);
+        if (foundItem) {
+          newTodos[index] = { ...foundItem, priority: todo.priority };
+        }
+      });
       setTodos(newTodos);
     },
     render: "Updating the todo list...",
   });
 
-  // Copilot Actions: Delete Todo
-  useCopilotAction({
-    name: "deleteTodo",
-    description: "Delete a todo item",
-    parameters: [{ name: "id", type: "string", description: "The id of the todo item to delete." }],
-    handler: ({ id }) => setTodos(todos.filter((todo) => todo.id !== id)),
-    render: "Deleting a todo item...",
-  });
+  const updatePriority = (id: string, priority: Priority) => {
+    setTodos(prevTodos => {
+      const newTodos = prevTodos.map(todo =>
+        todo.id === id ? { ...todo, priority } : todo
+      );
+      return sortByPriority(newTodos);
+    });
+  };
+
+  const sortByPriority = (todos: Todo[]) => {
+    const priorityOrder = { High: 3, Medium: 2, Low: 1, null: 0 };
+    return [...todos].sort((a, b) => {
+      const priorityA = priorityOrder[a.priority || 'null'];
+      const priorityB = priorityOrder[b.priority || 'null'];
+      return priorityB - priorityA;
+    });
+  };
 
   // Adding a new todo
   const addTodo = () => {
     if (input.trim() !== "") {
-      setTodos([...todos, { id: nanoid(), text: input.trim(), isCompleted: false, assignedDate: today }]);
+      const newTodo = {
+        id: nanoid(),
+        text: input.trim(),
+        isCompleted: false,
+        assignedDate: today,
+        priority: null as Priority
+      };
+      setTodos(prevTodos => sortByPriority([...prevTodos, newTodo]));
       setInput("");
     }
   };
+
+    // Filter tasks based on the date
+    const todayTasks = sortByPriority(todos.filter(
+      (todo) => todo.assignedDate?.toDateString() === today.toDateString()
+    ));
+    const tomorrowTasks = sortByPriority(todos.filter(
+      (todo) => todo.assignedDate?.toDateString() === tomorrow.toDateString()
+    ));
+    const thisWeekTasks = sortByPriority(todos.filter(
+      (todo) =>
+        todo.assignedDate && todo.assignedDate > tomorrow && todo.assignedDate <= weekEnd
+    ));
+    const laterTasks = sortByPriority(todos.filter(
+      (todo) => todo.assignedDate && todo.assignedDate > weekEnd
+    ));
+  
 
   const handleKeyPress = (e: React.KeyboardEvent) => e.key === "Enter" && addTodo();
 
@@ -97,108 +116,120 @@ export const TodoList: React.FC = () => {
 
   // Assign date to a todo
   const assignDate = (id: string, date: Date | null) =>
-    setTodos((prevTodos) => prevTodos.map((todo) => (todo.id === id ? { ...todo, date } : todo)));
+    setTodos(todos.map((todo) => (todo.id === id ? { ...todo, assignedDate: date || undefined } : todo)));
 
   return (
-    <>
-    <div className="container-glassmorphism p-4">
-      <div className="flex mb-4">
-        <input
-          className="border rounded-md p-2 flex-1 mr-2"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyPress}
-        />
-        <button className="bg-blue-500 rounded-md p-2 text-white" onClick={addTodo}>
-          Add Todo
-        </button>
-      </div>
-    </div>
-
-      {/* Task sections */}
-      <div className="todo-container">
-        <div className="card-container">
-          {/* Today's Tasks */}
-          <div className="task-card">
-            <h2>Today's Tasks</h2>
-            <hr />
-            {todayTasks.length > 0 ? (
-              todayTasks.map((task) => (
-                <TodoItem
-                  key={task.id}
-                  todo={task}
-                  toggleComplete={toggleComplete}
-                  deleteTodo={deleteTodo}
-                  assignPerson={assignPerson}
-                  assignDate={assignDate}
-                />
-              ))
-            ) : (
-              <p>No tasks Today!</p>
-            )}
-          </div>
-
-          {/* Tomorrow's Tasks */}
-          <div className="task-card">
-            <h2>Tomorrow's Tasks</h2>
-            <hr />
-            {tomorrowTasks.length > 0 ? (
-              tomorrowTasks.map((task) => (
-                <TodoItem
-                  key={task.id}
-                  todo={task}
-                  toggleComplete={toggleComplete}
-                  deleteTodo={deleteTodo}
-                  assignPerson={assignPerson}
-                  assignDate={assignDate}
-                />
-              ))
-            ) : (
-              <p>No tasks for Tomorrow</p>
-            )}
-          </div>
-
-          {/* This Week's Tasks */}
-          <div className="task-card">
-            <h2>This Week's Tasks</h2>
-            <hr />
-            {thisWeekTasks.length > 0 ? (
-              thisWeekTasks.map((task) => (
-                <TodoItem
-                  key={task.id}
-                  todo={task}
-                  toggleComplete={toggleComplete}
-                  deleteTodo={deleteTodo}
-                  assignPerson={assignPerson}
-                  assignDate={assignDate}
-                />
-              ))
-            ) : (
-              <p>No task this Week</p>
-            )}
-          </div>
-
-          {/* Later Tasks */}
-          <div className="task-card">
-            <h2>Later Tasks</h2>
-            <hr />
-            {laterTasks.length > 0 ? (
-              laterTasks.map((task) => (
-                <TodoItem
-                  key={task.id}
-                  todo={task}
-                  toggleComplete={toggleComplete}
-                  deleteTodo={deleteTodo}
-                  assignPerson={assignPerson}
-                  assignDate={assignDate}
-                />
-              ))
-            ) : (
-              <p>No tasks for later!</p>
-            )}
-          </div>
+    <div className="space-y-6">
+      <div className="max-w-2xl mx-auto">
+      <div className="container-glassmorphism p-6 mb-8">
+        <div className="flex gap-4">
+          <input
+            className="todo-input"
+            value={input}
+            placeholder="What needs to be done?"
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyPress}
+          />
+          <button className="add-button" onClick={addTodo}>
+            Add Task
+          </button>
         </div>
       </div>
-    </>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+        {/* Today's Tasks */}
+        <div className="task-card">
+          <h2 className="category-header">
+            Today&apos;s Tasks
+            <span className="task-count">{todayTasks.length}</span>
+          </h2>
+          {todayTasks.length > 0 ? (
+            todayTasks.map((task) => (
+              <TodoItem
+                key={task.id}
+                todo={task}
+                toggleComplete={toggleComplete}
+                deleteTodo={deleteTodo}
+                assignPerson={assignPerson}
+                assignDate={assignDate}
+                updatePriority={updatePriority}
+              />
+            ))
+          ) : (
+            <p className="text-gray-400">No tasks for today</p>
+          )}
+        </div>
+
+        {/* Tomorrow's Tasks */}
+        <div className="task-card">
+          <h2 className="category-header">
+            Tomorrow&apos;s Tasks
+            <span className="task-count">{tomorrowTasks.length}</span>
+          </h2>
+          {tomorrowTasks.length > 0 ? (
+            tomorrowTasks.map((task) => (
+              <TodoItem
+                key={task.id}
+                todo={task}
+                toggleComplete={toggleComplete}
+                deleteTodo={deleteTodo}
+                assignPerson={assignPerson}
+                assignDate={assignDate}
+                updatePriority={updatePriority}
+              />
+            ))
+          ) : (
+            <p className="text-gray-400">No tasks for tomorrow</p>
+          )}
+        </div>
+
+        {/* This Week's Tasks */}
+        <div className="task-card">
+          <h2 className="category-header">
+            This Week&apos;s Tasks
+            <span className="task-count">{thisWeekTasks.length}</span>
+          </h2>
+          {thisWeekTasks.length > 0 ? (
+            thisWeekTasks.map((task) => (
+              <TodoItem
+                key={task.id}
+                todo={task}
+                toggleComplete={toggleComplete}
+                deleteTodo={deleteTodo}
+                assignPerson={assignPerson}
+                assignDate={assignDate}
+                updatePriority={updatePriority}
+              />
+            ))
+          ) : (
+            <p className="text-gray-400">No tasks this week</p>
+          )}
+        </div>
+
+        {/* Later Tasks */}
+        <div className="task-card">
+          <h2 className="category-header">
+            Later Tasks
+            <span className="task-count">{laterTasks.length}</span>
+          </h2>
+          {laterTasks.length > 0 ? (
+            laterTasks.map((task) => (
+              <TodoItem
+                key={task.id}
+                todo={task}
+                toggleComplete={toggleComplete}
+                deleteTodo={deleteTodo}
+                assignPerson={assignPerson}
+                assignDate={assignDate}
+                updatePriority={updatePriority}
+              />
+            ))
+          ) : (
+            <p className="text-gray-400">No tasks scheduled for later</p>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };

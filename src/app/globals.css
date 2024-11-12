@@ -1,129 +1,178 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=General+Sans:wght@400;700&display=swap');
 
 :root {
-  --background-gradient: radial-gradient( circle farthest-corner at 3.2% 49.6%,  rgba(80,12,139,0.87) 0%, rgba(161,10,144,0.72) 83.6% );
-  --circle-one: radial-gradient( circle farthest-corner at 3.2% 49.6%,  #0a1d35 0%, #12487d 83.6% );
-  --circle-two: radial-gradient( circle farthest-corner at 3.2% 49.6%,  #5a1f19 0%, #a32d24 83.6% );
-  --circle-three: radial-gradient( circle farthest-corner at 3.2% 49.6%,  #304219 0%, #5D694B 83.6% );
+  --circle-one: linear-gradient(to right, #4f46e5, #3b82f6);
+  --circle-two: linear-gradient(to right, #10b981, #3b82f6);
+  --circle-three: linear-gradient(to right, #8b5cf6, #3b82f6);
+  --background-gradient: var(--circle-one);
 }
 
-html, body {
-  height: 100vh;
-  background-image: var(--background-gradient);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+body {
+  background: var(--background-gradient);
+  min-height: 100vh;
 }
 
-hr {
-  /* border: 0; */
-  /* height: 5px; */
-  color: dimgrey;
+.todo-input {
+  @apply flex-1 p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500;
 }
 
-.gradient-selector {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); */
-}
-
-.circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.circle.one {
-  background-image: var(--circle-one);
-}
-
-.circle.two {
-  background-image: var(--circle-two);
-}
-
-.circle.three {
-  background-image: var(--circle-three);
-}
-
-@keyframes typing {
-  from { width: 0 }
-  to { width: 100% }
-}
-
-@keyframes backspacing {
-  from { width: 100% }
-  to { width: 0 }
-}
-
-.typing-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 2.5rem;
-  width: 100vw;
-  /* margin: 0.5em; */
-}
-
-.typing-heading {
-  /* white-space: nowrap; */
-  overflow: hidden;
-  color: white;
-  border-right: 0.15em solid rgb(0, 0, 0);
-  font-size: 2em;
-  font-weight: 600;
-  width: fit-content;
-  display: inline-block;
-}
-
-.todo-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  /* margin-top: 4em; */
-  justify-content: center;
-  align-items: center;
-}
-
-.card-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+.add-button {
+  @apply px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors;
 }
 
 .task-card {
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  padding: 16px;
-  flex: 1;
-  min-width: 300px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin: 10px;
+  @apply bg-white/10 backdrop-blur-lg rounded-lg p-4 min-h-[200px] w-full;
 }
 
-h2 {
-  font-size: 1.25rem;
-  margin-bottom: 12px;
+.category-header {
+  @apply text-xl font-bold text-white mb-4 flex justify-between items-center;
 }
 
-hr {
-  margin: 8px 8px;
+.task-count {
+  @apply bg-white/20 px-2 py-1 rounded text-sm;
 }
 
-p {
-  color: #777;
+.todo-item {
+  @apply bg-white/5 backdrop-blur-sm rounded-lg p-4 mb-2 w-full;
+}
+
+.checkbox {
+  @apply w-5 h-5 rounded border-gray-300;
+}
+
+/* Date picker styles starting */
+.react-datepicker-popper {
+  @apply z-50 !important;
+}
+
+.react-datepicker {
+  @apply bg-white/20 backdrop-blur-lg border-gray-300 !important;
+}
+
+.react-datepicker__header {
+  @apply bg-white/30 border-gray-300 !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name {
+  @apply text-black !important;
+}
+
+.react-datepicker__day {
+  @apply text-black hover:bg-white/30 !important;
+}
+
+.react-datepicker__day--selected {
+  @apply bg-blue-500 hover:bg-blue-600 !important;
+}
+
+.react-datepicker__day--keyboard-selected {
+  @apply bg-blue-500/50 !important;
+}
+/* Date picker styles ending */
+
+.date-picker {
+  @apply p-1 rounded border border-gray-300 bg-transparent text-black;
+}
+
+.assign-input {
+  @apply p-1 rounded border border-gray-300 bg-transparent text-black;
+}
+
+.todo-item-content {
+  @apply flex flex-col gap-2 w-full;
+}
+
+.todo-item-actions {
+  @apply flex flex-wrap items-center gap-2 mt-2;
+}
+
+.delete-button {
+  @apply px-2 py-1 bg-red-500/50 text-white rounded hover:bg-red-600/50 transition-colors;
+}
+
+.container-glassmorphism {
+  @apply bg-white/10 backdrop-blur-lg rounded-lg;
+}
+
+.typing-container {
+  @apply text-center py-8;
+}
+
+.typing-heading {
+  @apply text-4xl font-bold text-white;
+}
+
+.gradient-selector {
+  @apply flex justify-center gap-4 my-4;
+}
+
+.priority-button {
+  @apply px-3 py-1 rounded text-black text-sm font-medium transition-all duration-300;
+}
+
+.priority-high {
+  @apply bg-gradient-to-r from-red-500 to-pink-500;
+}
+
+.priority-medium {
+  @apply bg-gradient-to-r from-yellow-500 to-orange-500;
+}
+
+.priority-low {
+  @apply bg-gradient-to-r from-blue-500 to-cyan-500;
+}
+
+.priority-none {
+  @apply bg-white/20 backdrop-blur-sm;
+}
+
+.priority-dropdown {
+  @apply absolute right-0 mt-2 w-32 rounded-md shadow-lg 
+  bg-white/10 backdrop-blur-md ring-1 ring-black ring-opacity-5 z-50;
+}
+
+.priority-option {
+  @apply block px-4 py-2 text-sm text-black hover:bg-white/20 
+  cursor-pointer transition-colors duration-150;
+}
+
+.todo-item-footer {
+  @apply flex justify-between items-center mt-2;
+}
+
+.actions-right {
+  @apply flex gap-2 items-center;
+}
+
+.circle {
+  @apply w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold cursor-pointer transition-transform hover:scale-110;
+}
+
+/* Gradient boxes for theme selector */
+.gradient-box {
+  @apply w-8 h-8 rounded-md cursor-pointer transition-transform hover:scale-110;
+}
+
+.gradient-box.one {
+  background: var(--circle-one);
+}
+
+.gradient-box.two {
+  background: var(--circle-two);
+}
+
+.gradient-box.three {
+  background: var(--circle-three);
+}
+
+/* Optional: Add hover effect for the theme button */
+.theme-button {
+  @apply transition-all duration-300;
+}
+
+.theme-button:hover {
+  @apply transform scale-105;
 }
